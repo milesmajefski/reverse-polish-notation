@@ -9,7 +9,7 @@ class RPN_calculator:
     (double-ended queue) structure to maintain the stack of operands and 
     operators during calculation.  Only operators using 2 operands are supported.
     """
-    operators = {
+    _operators = {
         '+': __add__,
         '-': __sub__,
         '*': __mul__,
@@ -17,10 +17,10 @@ class RPN_calculator:
     }
 
     def __init__(self):
-        self.parsed_input = deque()
-        self.operation_stack = deque()
+        self._parsed_input = deque()
+        self._operation_stack = deque()
 
-    def rpn_parse_float(self, data_string):
+    def _parse_float(self, data_string):
         """
         Take a string of user input like "1 2 +" and return parsed data
         like (1.0, 2.0, "+").  Always using float because / operator will often
@@ -28,7 +28,7 @@ class RPN_calculator:
         """
         parsed = []
         for d in data_string.split():
-            if d in self.operators:
+            if d in self._operators:
                 parsed.append(d)
             else:
                 try:
@@ -36,29 +36,34 @@ class RPN_calculator:
                 except ValueError as e:
                     print(
                         f'Cannot convert {d} to float and {d} is not a supported operator')
-                    raise RuntimeError ('error_loc 493832: Parsing failed. ' + e)
+                    raise RuntimeError(
+                        'error_loc 493832: Parsing failed. ' + str(e))
                 else:
                     parsed.append(as_float)
 
         return parsed
 
-    def rpn_receiver(self, data_string="1 2 +"):
-        for datum in self.rpn_parse_float(data_string):
-            self.parsed_input.append(datum)
+    def evaluate(self, data_string="1 2 +"):
+        for datum in self._parse_float(data_string):
+            self._parsed_input.append(datum)
+        return self._calc()
 
-    def rpn_calc(self):
-        print(f'Calculating expression {self.parsed_input}')
+    def _calc(self):
+        print(f'Calculating expression {self._parsed_input}')
         result = None
         operand1 = operand2 = None
-        for token in self.parsed_input:
-            if token in self.operators:
+        for token in self._parsed_input:
+            if token in self._operators:
                 try:
-                    operand1 = self.operation_stack.pop()
-                    operand2 = self.operation_stack.pop()
-                    result = self.operators[token](operand1, operand2)
+                    operand2 = self._operation_stack.pop()
+                    operand1 = self._operation_stack.pop()
+                    result = self._operators[token](operand1, operand2)
+                    self._operation_stack.append(result)
                 except IndexError as e:
                     print(f'Not enough operands to satisfy operator.')
-                    raise RuntimeError ('error_loc 947211: Calculation failed. ' + e)
+                    raise RuntimeError(
+                        'error_loc 947211: Calculation failed. ' + str(e))
             else:
-                self.operation_stack.append(token) 
-        return result
+                self._operation_stack.append(token)
+        # return result
+        return self._operation_stack.pop()
