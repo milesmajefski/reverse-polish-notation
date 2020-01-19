@@ -2,6 +2,17 @@ from collections import deque
 from operator import __add__, __sub__, __mul__, __truediv__
 
 
+class RPN_result:
+    """
+    This is a class to encapsulate the stack resulting from the RPN
+    calculation as well as any error message that the user needs to see.
+    """
+
+    def __init__(self, result_stack, error_msg):
+        self.result_stack = result_stack.copy()
+        self.error_msg = error_msg
+
+
 class RPN_calculator:
     """
     This class manages a queue of user input in reverse polish notation
@@ -9,6 +20,7 @@ class RPN_calculator:
     (double-ended queue) structure to maintain the stack of operands and 
     operators during calculation.  Only operators using 2 operands are supported.
     """
+
     _operators = {
         '+': __add__,
         '-': __sub__,
@@ -19,6 +31,10 @@ class RPN_calculator:
     def __init__(self):
         self._parsed_input = deque()
         self._operation_stack = deque()
+
+    def _clear(self):
+        self._parsed_input.clear()
+        self._operation_stack.clear()
 
     def _parse_float(self, data_string):
         """
@@ -34,10 +50,8 @@ class RPN_calculator:
                 try:
                     as_float = float(d)
                 except ValueError as e:
-                    print(
-                        f'Cannot convert {d} to float and {d} is not a supported operator')
-                    raise RuntimeError(
-                        'error_loc 493832: Parsing failed. ' + str(e))
+                    return RPN_result(result_stack=self._operation_stack, error_msg=f'Cannot convert {d} to float and {d} is not a supported operator')
+
                 else:
                     parsed.append(as_float)
 
@@ -46,10 +60,11 @@ class RPN_calculator:
     def evaluate(self, data_string="1 2 +"):
         for datum in self._parse_float(data_string):
             self._parsed_input.append(datum)
-        return self._calc()
+        result = self._calc()
+        self._clear()
+        return result
 
     def _calc(self):
-        print(f'Calculating expression {self._parsed_input}')
         result = None
         operand1 = operand2 = None
         for token in self._parsed_input:
@@ -60,10 +75,9 @@ class RPN_calculator:
                     result = self._operators[token](operand1, operand2)
                     self._operation_stack.append(result)
                 except IndexError as e:
-                    print(f'Not enough operands to satisfy operator.')
-                    raise RuntimeError(
-                        'error_loc 947211: Calculation failed. ' + str(e))
+                    return RPN_result(result_stack=self._operation_stack, error_msg='Not enough operands to satisfy operator.')
+
             else:
                 self._operation_stack.append(token)
-        # return result
-        return self._operation_stack.pop()
+
+        return RPN_result(result_stack=self._operation_stack, error_msg=None)
