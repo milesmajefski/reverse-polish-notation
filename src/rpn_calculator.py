@@ -28,20 +28,21 @@ class RPN_calculator:
     def parse_float(self, data_string):
         """
         Take a string of user input like "1 2 +" and return parsed data
-        like (1.0, 2.0, "+").  Always using float because / operator will often
-        return a float automatically
+        like (1.0, 2.0, "+") in a deque.  Always using float because / operator 
+        will often return a float automatically
         """
         parsed = []
         for d in data_string.split():
             if d in self._operators:
                 parsed.append(d)
+                continue
+
+            try:
+                as_float = float(d)
+            except ValueError as e:
+                return {'parsed': parsed, 'error_msg': f'Cannot convert {d} to float and {d} is not a supported operator'}
             else:
-                try:
-                    as_float = float(d)
-                except ValueError as e:
-                    return {'parsed': parsed, 'error_msg': f'Cannot convert {d} to float and {d} is not a supported operator'}
-                else:
-                    parsed.append(as_float)
+                parsed.append(as_float)
 
         return {'parsed': parsed.copy(), 'error_msg': None}
 
@@ -52,7 +53,7 @@ class RPN_calculator:
         return result
 
     def _calc(self):
-        result = None
+        # result = None
         operand1 = operand2 = None
         for token in self._parsed_input:
             if token not in self._operators:
