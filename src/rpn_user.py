@@ -20,19 +20,19 @@ class RPN_cli:
 
         while self.please_continue:
             if self.user_input:
-                self.evaluate()
+                self.parse_and_evaluate()
             self.handle_inputs(self.prompt())
 
-    def evaluate(self):
+    def parse_and_evaluate(self):
         parse_result = self.calc.parse_float(self.user_input)
         if not parse_result['error_msg']:
             self.operation_stack.extend(parse_result['parsed'])
         else:
             print(parse_result['error_msg'])
         result = self.calc.evaluate(self.operation_stack)
-        self.operation_stack = result.result_stack
-        if result.error_msg:
-            print(result.error_msg)
+        self.operation_stack = result['result_stack']
+        if result['error_msg']:
+            print(result['error_msg'])
 
     def prompt(self):
         try:
@@ -59,5 +59,5 @@ if __name__ == '__main__':
     else:
         cli = RPN_cli()
         cli.user_input = ' '.join(args)
-        cli.evaluate()
+        cli.parse_and_evaluate()
         print(list(cli.operation_stack))

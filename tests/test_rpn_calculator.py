@@ -18,18 +18,18 @@ class TestRPNCalculator(unittest.TestCase):
 
     def test_add(self):
         result = self.calc.evaluate(self._process_input('2 9 +'))
-        self.assertEqual(result.result_stack, deque([11]))
-        self.assertIsNone(result.error_msg)
+        self.assertEqual(result['result_stack'], deque([11]))
+        self.assertIsNone(result['error_msg'])
 
     def test_combined_operations(self):
         result = self.calc.evaluate(self._process_input('15 7 1 1 + - / 3 * 2 1 1 + + -'))
-        self.assertEqual(result.result_stack, deque([5]))
-        self.assertIsNone(result.error_msg)
+        self.assertEqual(result['result_stack'], deque([5]))
+        self.assertIsNone(result['error_msg'])
 
     def test_not_enough_operands(self):
         result = self.calc.evaluate(self._process_input('7 +'))
-        self.assertEqual(result.result_stack, deque([]))
-        self.assertIsNotNone(result.error_msg)
+        self.assertEqual(result['result_stack'], deque([7]))
+        self.assertIsNotNone(result['error_msg'])
 
 
 if __name__ == '__main__':
