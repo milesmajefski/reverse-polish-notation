@@ -1,5 +1,7 @@
 from collections import deque
-from operator import __add__, __sub__, __mul__, __truediv__
+from rpn_shared import parse_float
+from rpn_operators import _operators
+import json
 
 
 class RPN_calculator:
@@ -8,14 +10,8 @@ class RPN_calculator:
     and evaluates the expression. This class utilizes a deque 
     (double-ended queue) structure to maintain the stack of operands and 
     operators during calculation.  Only operators using 2 operands are supported.
+    All inputs and outputs of this class will be json strings.
     """
-
-    _operators = {
-        '+': __add__,
-        '-': __sub__,
-        '*': __mul__,
-        '/': __truediv__
-    }
 
     def __init__(self):
         self._parsed_input = deque()
@@ -25,47 +21,25 @@ class RPN_calculator:
         self._parsed_input.clear()
         self._operation_stack.clear()
 
-    def parse_float(self, data_string):
-        """
-        Take a string of user input like "1 2 +" and return parsed data
-        like (1.0, 2.0, "+") in a deque.  Always using float because / operator 
-        will often return a float automatically
-        """
-        parsed = []
-        for d in data_string.split():
-            if d in self._operators:
-                parsed.append(d)
-                continue
-
-            try:
-                as_float = float(d)
-            except ValueError as e:
-                return {'parsed': parsed, 'error_msg': f'Cannot convert {d} to float and {d} is not a supported operator'}
-            else:
-                parsed.append(as_float)
-
-        return {'parsed': parsed.copy(), 'error_msg': None}
-
     def evaluate(self, data_deque):
-        self._parsed_input = data_deque
+        self._parsed_input = deque(json.loads(data_deque))  # json array is representing deque
         result = self._calc()
         self._clear()
         return result
 
     def _calc(self):
-        # result = None
         operand1 = operand2 = None
         for token in self._parsed_input:
-            if token not in self._operators:
+            if token not in _operators:
                 self._operation_stack.append(token)
                 continue
 
             if len(self._operation_stack) < 2:
-                return {'result_stack': self._operation_stack.copy(), 'error_msg': 'Not enough operands to satisfy operator.'}
+                return json.dumps({'result_stack': list(self._operation_stack.copy()), 'error_msg': 'Not enough operands to satisfy operator.'})
 
             operand2 = self._operation_stack.pop()
             operand1 = self._operation_stack.pop()
-            result = self._operators[token](operand1, operand2)
+            result = _operators[token](operand1, operand2)
             self._operation_stack.append(result)
 
-        return {'result_stack': self._operation_stack.copy(), 'error_msg': None}
+        return json.dumps({'result_stack': list(self._operation_stack.copy()), 'error_msg': None})
