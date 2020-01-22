@@ -1,5 +1,6 @@
-import unittest
 import sys
+import unittest
+
 sys.path.append('./src')
 from rpn_shared import parse_float
 

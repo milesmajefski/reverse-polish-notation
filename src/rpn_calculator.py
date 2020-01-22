@@ -1,7 +1,7 @@
-from collections import deque
-from rpn_shared import parse_float
-from rpn_operators import _operators
 import json
+from collections import deque
+
+from rpn_operators import _operators
 
 
 class RPN_calculator:
@@ -37,7 +37,7 @@ class RPN_calculator:
 
             if len(self._operation_stack) < 2:
                 return json.dumps(
-                    {'result_stack': list(self._operation_stack.copy()), 
+                    {'result_stack': list(self._operation_stack.copy()),
                      'error_msg': 'Not enough operands to satisfy operator.'})
 
             operand2 = self._operation_stack.pop()
@@ -46,5 +46,5 @@ class RPN_calculator:
             self._operation_stack.append(result)
 
         return json.dumps(
-            {'result_stack': list(self._operation_stack.copy()), 
+            {'result_stack': list(self._operation_stack.copy()),
              'error_msg': None})

@@ -1,10 +1,11 @@
-import unittest
 import sys
+import unittest
+import json
+from collections import deque
+
 sys.path.append('./src')
 import rpn_calculator as rpn
-from collections import deque
 from rpn_shared import parse_float
-import json
 
 
 class TestRPNCalculator(unittest.TestCase):

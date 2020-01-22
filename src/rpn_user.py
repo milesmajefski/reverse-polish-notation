@@ -1,8 +1,9 @@
-import rpn_calculator as rpn
-from collections import deque
 import sys
-from rpn_shared import parse_float
 import json
+from collections import deque
+
+import rpn_calculator as rpn
+from rpn_shared import parse_float
 
 
 class RPN_cli:
