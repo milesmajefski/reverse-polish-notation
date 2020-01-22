@@ -24,6 +24,26 @@ class TestRPNCalculator(unittest.TestCase):
         self.assertEqual(result['result_stack'], [11])
         self.assertIsNone(result['error_msg'])
 
+    def test_subtract(self):
+        result = self._process_input('2 9 -')
+        self.assertEqual(result['result_stack'], [-7])
+        self.assertIsNone(result['error_msg'])
+
+    def test_multiply(self):
+        result = self._process_input('2 9 *')
+        self.assertEqual(result['result_stack'], [18])
+        self.assertIsNone(result['error_msg'])
+
+    def test_divide(self):
+        result = self._process_input('2 9 /')
+        self.assertEqual(result['result_stack'], [2 / 9])
+        self.assertIsNone(result['error_msg'])
+
+    def test_percent(self):
+        result = self._process_input('2 9 %')
+        self.assertAlmostEqual(result['result_stack'][0], [22.22222][0], 5)
+        self.assertIsNone(result['error_msg'])
+
     def test_combined_operations(self):
         result = self._process_input('15 7 1 1 + - / 3 * 2 1 1 + + -')
         self.assertEqual(result['result_stack'], [5])

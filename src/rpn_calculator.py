@@ -22,7 +22,8 @@ class RPN_calculator:
         self._operation_stack.clear()
 
     def evaluate(self, data_deque):
-        self._parsed_input = deque(json.loads(data_deque))  # json array is representing deque
+        # json array is representing deque
+        self._parsed_input = deque(json.loads(data_deque))
         result = self._calc()
         self._clear()
         return result
@@ -35,11 +36,15 @@ class RPN_calculator:
                 continue
 
             if len(self._operation_stack) < 2:
-                return json.dumps({'result_stack': list(self._operation_stack.copy()), 'error_msg': 'Not enough operands to satisfy operator.'})
+                return json.dumps(
+                    {'result_stack': list(self._operation_stack.copy()), 
+                     'error_msg': 'Not enough operands to satisfy operator.'})
 
             operand2 = self._operation_stack.pop()
             operand1 = self._operation_stack.pop()
             result = _operators[token](operand1, operand2)
             self._operation_stack.append(result)
 
-        return json.dumps({'result_stack': list(self._operation_stack.copy()), 'error_msg': None})
+        return json.dumps(
+            {'result_stack': list(self._operation_stack.copy()), 
+             'error_msg': None})

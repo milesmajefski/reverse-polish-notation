@@ -6,10 +6,10 @@ from rpn_operators import _operators
 def parse_float(data_string):
     """
     Take a string of user input like "1 2 +" and return parsed data
-    like (1.0, 2.0, "+") in a deque.  Always using float because / operator 
-    will often return a float automatically
+    like (1.0, 2.0, "+") in a list inside a dict.  Always using float 
+    because / operator will often return a float automatically.
     """
-    
+
     parsed = []
     for d in data_string.split():
         if d in _operators:
@@ -23,4 +23,4 @@ def parse_float(data_string):
         else:
             parsed.append(as_float)
 
-    return {'parsed': parsed.copy(), 'error_msg': None}
+    return {'parsed': parsed, 'error_msg': None}
