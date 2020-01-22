@@ -69,10 +69,18 @@ def run_headless(input_string):
     print(list(cli.operation_stack))
 
 
-if __name__ == '__main__':
-    args = sys.argv[1:]    
+def is_posix():
+    try:
+        import posix
+        return True
+    except ImportError:
+        return False
 
-    if len(args) == 1 and args[0] == '-':
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+
+    if len(args) == 1 and args[0] == '-' and is_posix():
         # we are doing pipe mode
         pipe_data = sys.stdin.readlines()
         for line in pipe_data:
