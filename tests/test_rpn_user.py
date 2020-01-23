@@ -1,12 +1,12 @@
 import sys
 import os
 import unittest
-import json
 import subprocess
-from collections import deque
 
 sys.path.append('./src')
-from rpn_user import is_posix, RPN_cli
+from rpn_user import is_posix
+
+# change current working directory to src 
 os.chdir(os.path.join(os.path.abspath(os.getcwd()), 'src'))
 
 if is_posix():
@@ -52,6 +52,22 @@ class TestRPNUser(unittest.TestCase):
             self._run_cmd_line_args(cmd).startswith('Cannot convert'))
 
     # interactive mode
+    def _run_interactive(self, cmd):
+        ps = subprocess.Popen([pycmd, "rpn_user.py"],
+                              stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT)
+        output_bytearray = ps.communicate(input=cmd)[0]
+        output_string = output_bytearray.decode().strip()
+        return output_string
+
+    def test_interactive_mode_good(self):
+        result = self._run_interactive(b"2 3 +")
+        self.assertTrue(result.endswith("[5.0] >"))
+
+    def test_interactive_mode_trash(self):
+        result = self._run_interactive(b"s f2 - f3 +")
+        self.assertTrue('Cannot convert' in result)
 
 
 if __name__ == '__main__':
