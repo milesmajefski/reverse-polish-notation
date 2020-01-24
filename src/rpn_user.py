@@ -77,6 +77,21 @@ def is_posix():
         return False
 
 
+def print_help_msg():
+    print("""Usage:
+
+Start Interactive Mode
+$ python3 ./rpn_user.py
+
+Commandline Arguments
+$ python3 ./rpn_user.py 2 3 +
+
+Posix Pipes
+$ echo '2 3 +' | python3 ./rpn_user.py -
+
+Don't forget the dash at the end!""")
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
 
@@ -85,6 +100,10 @@ if __name__ == '__main__':
         pipe_data = sys.stdin.readlines()
         for line in pipe_data:
             run_headless(line)
+        exit()
+
+    if len(args) == 1 and (args[0] == '-h' or args[0] == '--help'):
+        print_help_msg()
         exit()
 
     if args:
