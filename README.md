@@ -3,7 +3,7 @@ This project is a calculator using [Reverse Polish Notation](https://en.wikipedi
 
 ## Technical Design
 ### Architecture
-The architecture of this utility as currently implemented is monolithic.  It is run inside a single process. To accomplish separation of concerns, there is an added step that converts all communication between front end and back end to JSON.   
+The architecture of this utility as currently implemented is monolithic.  It is run inside a single process. To help with further separation of concerns, there is an added step that converts all communication between front end and back end to JSON.   
 #### Modules
 - `rpn_calculator` provides the basic functionality of evaluating a reverse polish notation stack like `[1.0, 2.0, 3.0, "+"]` and returning the simplified stack.  In this case the return value is a stack like `[1.0, 5.0]`.
 - `rpn_user` provides the commandline UI.  It handles taking input from pipes, args, and user interaction.
