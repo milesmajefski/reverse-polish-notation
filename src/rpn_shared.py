@@ -1,13 +1,15 @@
+"""
+This module contains code that could be used by future python front-ends.
+"""
 from rpn_operators import _operators
 
 
 def parse_float(data_string):
     """
-    Take a string of user input like "1 2 +" and return parsed data
-    like (1.0, 2.0, "+") in a list inside a dict.  Always using float
-    because / operator will often return a float automatically.
+    This function takes a string of user input like "1 2 +" and returns parsed
+    data like (1.0, 2.0, "+") in a list inside a dict.  It always uses float
+    because "/" operator will often return a float automatically.
     """
-
     parsed = []
     for d in data_string.split():
         if d in _operators:
